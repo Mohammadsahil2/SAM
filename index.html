@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SAM - Tune Your Mind</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<h1>SAM</h1>
+<p>Tune Your Mind</p>
+
+<h2>Select Mode</h2>
+
+<button onclick="startSession(18,'Deep Focus')">Deep Focus</button>
+<button onclick="startSession(14,'Focus')">Focus</button>
+<button onclick="startSession(10,'Relax')">Relax</button>
+<button onclick="startSession(6,'Meditation')">Meditation</button>
+<button onclick="startSession(3,'Sleep')">Sleep</button>
+
+<br><br>
+
+Session Length
+
+<input type="number" id="sessionTime" value="20">
+
+<br><br>
+
+<button onclick="stopSession()">Stop</button>
+
+<p id="status"></p>
+
+<h2>Progress</h2>
+
+<select id="chartType" onchange="changeChart()">
+<option value="bar">Bar</option>
+<option value="pie">Pie</option>
+<option value="line">Line</option>
+</select>
+
+<canvas id="progressChart"></canvas>
+
+<script src="script.js"></script>
+
+</body>
+</html>

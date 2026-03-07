@@ -1,0 +1,22 @@
+body{
+background:#0a0f1f;
+color:white;
+font-family:Arial;
+text-align:center;
+margin-top:40px;
+}
+
+button{
+padding:10px 20px;
+margin:10px;
+border:none;
+border-radius:8px;
+background:linear-gradient(135deg,#0ff0fc,#8a2be2,#ff2bd6);
+color:black;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.8;
+}

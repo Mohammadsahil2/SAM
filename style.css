@@ -1,21 +1,56 @@
 body{
+margin:0;
 font-family:Arial;
-background:#0a0f1f;
+background:#070b1a;
 color:white;
 text-align:center;
-margin:0;
+overflow-x:hidden;
 }
 
 header{
 padding:20px;
-background:#141c3a;
+background:#111842;
+}
+
+h1{
+margin:0;
+font-size:40px;
+}
+
+.companion{
+margin:30px auto;
+max-width:400px;
+padding:20px;
+background:#0e1435;
+border-radius:20px;
+box-shadow:0 0 20px rgba(138,43,226,0.5);
+}
+
+#avatar{
+width:120px;
+height:120px;
+margin:auto;
+border-radius:50%;
+background:radial-gradient(circle,#8a2be2,#000);
+animation:pulse 3s infinite;
+}
+
+@keyframes pulse{
+0%{transform:scale(1)}
+50%{transform:scale(1.05)}
+100%{transform:scale(1)}
+}
+
+#samText{
+margin:20px;
+font-size:18px;
 }
 
 button{
-padding:12px;
-margin:8px;
+padding:12px 18px;
+margin:10px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 background:#8a2be2;
 color:white;
 cursor:pointer;
@@ -26,22 +61,20 @@ background:#9c4dff;
 }
 
 .controls{
-padding:20px;
-}
-
-.moods button{
-width:120px;
-}
-
-#samChat{
-margin:20px;
-padding:15px;
-background:#111;
-border-radius:10px;
-min-height:60px;
+margin-top:30px;
 }
 
 canvas{
 max-width:600px;
-margin:auto;
+margin:40px auto;
+display:block;
+}
+
+#visuals{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+height:200px;
+z-index:-1;
 }

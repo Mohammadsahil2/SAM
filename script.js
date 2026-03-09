@@ -1,9 +1,28 @@
 let audioContext
-let oscLeft
-let oscRight
+let oscL
+let oscR
 
 let sessions=0
 let minutes=0
+
+const chart=new Chart(
+document.getElementById("chart"),
+{
+type:"bar",
+data:{
+labels:["Sessions","Minutes"],
+datasets:[{
+label:"SAM Usage",
+data:[0,0]
+}]
+}
+}
+)
+
+function updateChart(){
+chart.data.datasets[0].data=[sessions,minutes]
+chart.update()
+}
 
 function startSession(type){
 
@@ -14,163 +33,159 @@ audioContext=new(window.AudioContext||window.webkitAudioContext)()
 let base=200
 let beat=10
 
-if(type=="focus") beat=16
-if(type=="relax") beat=10
-if(type=="creative") beat=6
-if(type=="sleep") beat=2
+if(type==="focus") beat=16
+if(type==="relax") beat=10
+if(type==="creative") beat=6
+if(type==="sleep") beat=2
 
-oscLeft=audioContext.createOscillator()
-oscRight=audioContext.createOscillator()
+oscL=audioContext.createOscillator()
+oscR=audioContext.createOscillator()
 
-oscLeft.frequency.value=base
-oscRight.frequency.value=base+beat
+oscL.frequency.value=base
+oscR.frequency.value=base+beat
 
-let panLeft=audioContext.createStereoPanner()
-let panRight=audioContext.createStereoPanner()
+let panL=audioContext.createStereoPanner()
+let panR=audioContext.createStereoPanner()
 
-panLeft.pan.value=-1
-panRight.pan.value=1
+panL.pan.value=-1
+panR.pan.value=1
 
-oscLeft.connect(panLeft).connect(audioContext.destination)
-oscRight.connect(panRight).connect(audioContext.destination)
+oscL.connect(panL).connect(audioContext.destination)
+oscR.connect(panR).connect(audioContext.destination)
 
-oscLeft.start()
-oscRight.start()
+oscL.start()
+oscR.start()
 
-let length=document.getElementById("sessionLength").value
+let len=document.getElementById("sessionLength").value
 
 sessions++
-minutes+=parseInt(length)
+minutes+=parseInt(len)
 
 updateChart()
 
-samSpeak("Starting your "+type+" session. Relax and focus.")
+samSpeak("Starting your "+type+" session.")
 
 }
 
 function stopSession(){
 
-if(oscLeft)oscLeft.stop()
-if(oscRight)oscRight.stop()
+if(oscL)oscL.stop()
+if(oscR)oscR.stop()
 
-samSpeak("Session stopped. Great work.")
+samSpeak("Session stopped. Good job.")
 
 }
 
 function samSpeak(text){
 
-let chat=document.getElementById("samChat")
+document.getElementById("samText").innerText=text
 
-chat.innerText=text
+let msg=new SpeechSynthesisUtterance(text)
 
-let speech=new SpeechSynthesisUtterance(text)
+let voices=speechSynthesis.getVoices()
 
-speech.rate=0.9
-speech.pitch=1
+msg.voice=voices.find(v=>v.name.toLowerCase().includes("female"))||voices[0]
 
-speechSynthesis.speak(speech)
+msg.rate=0.9
+
+speechSynthesis.speak(msg)
+
+}
+
+function startListening(){
+
+const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition
+
+let recog=new SpeechRecognition()
+
+recog.lang="en-US"
+
+recog.start()
+
+samSpeak("I'm listening.")
+
+recog.onresult=function(e){
+
+let speech=e.results[0][0].transcript.toLowerCase()
+
+handleQuery(speech)
+
+}
+
+}
+
+function handleQuery(q){
+
+if(q.includes("focus")){
+startSession("focus")
+return
+}
+
+if(q.includes("relax")||q.includes("stress")){
+startSession("relax")
+return
+}
+
+if(q.includes("sleep")){
+startSession("sleep")
+return
+}
+
+if(q.includes("stop")){
+stopSession()
+return
+}
+
+samSpeak("I understand. Maybe a focus session could help.")
 
 }
 
 function startPomodoro(){
 
 let focus=25*60
-let breakTime=5*60
 
-samSpeak("Pomodoro focus started")
+document.getElementById("pomodoroStatus").innerText="Focus session started"
+
+samSpeak("Pomodoro started.")
 
 setTimeout(()=>{
 
-samSpeak("Break time")
+samSpeak("Take a break.")
 
 },focus*1000)
 
 }
 
-function enableVoice(){
-
-const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition
-
-let recognition=new SpeechRecognition()
-
-recognition.start()
-
-recognition.onresult=function(e){
-
-let command=e.results[0][0].transcript
-
-handleVoice(command)
-
-}
-
-}
-
-function handleVoice(text){
-
-text=text.toLowerCase()
-
-if(text.includes("focus")) startSession("focus")
-
-else if(text.includes("relax")) startSession("relax")
-
-else if(text.includes("sleep")) startSession("sleep")
-
-else if(text.includes("stop")) stopSession()
-
-else samSpeak("I didn't understand, but I'm here with you.")
-
-}
-
-let ctx=document.getElementById("progressChart").getContext("2d")
-
-let chart=new Chart(ctx,{
-type:"bar",
-data:{
-labels:["Sessions","Minutes"],
-datasets:[{
-label:"Progress",
-data:[0,0]
-}]
-}
-})
-
-function updateChart(){
-
-chart.data.datasets[0].data=[sessions,minutes]
-chart.update()
-
-}
-
-const canvas=document.getElementById("visualCanvas")
-const ctx2=canvas.getContext("2d")
+const canvas=document.getElementById("visuals")
+const ctx=canvas.getContext("2d")
 
 canvas.width=window.innerWidth
 canvas.height=200
 
 let particles=[]
 
-for(let i=0;i<80;i++){
-
+for(let i=0;i<100;i++){
 particles.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
 size:Math.random()*3
 })
-
 }
 
 function animate(){
 
-ctx2.clearRect(0,0,canvas.width,canvas.height)
+ctx.clearRect(0,0,canvas.width,canvas.height)
 
 particles.forEach(p=>{
 
-ctx2.beginPath()
-ctx2.arc(p.x,p.y,p.size,0,Math.PI*2)
-ctx2.fillStyle="#8a2be2"
-ctx2.fill()
+ctx.beginPath()
+ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
 
-p.y+=0.3
+ctx.fillStyle="#8a2be2"
+
+ctx.fill()
+
+p.y+=0.4
 
 if(p.y>canvas.height)p.y=0
 
@@ -183,13 +198,9 @@ requestAnimationFrame(animate)
 animate()
 
 if(Notification.permission!=="granted"){
-
 Notification.requestPermission()
-
 }
 
 setInterval(()=>{
-
 new Notification("SAM Reminder",{body:"Time to tune your mind."})
-
 },3600000)

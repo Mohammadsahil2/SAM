@@ -1,33 +1,28 @@
 let audioContext
-let oscL
-let oscR
+let osc1
+let osc2
 
 let sessions=0
 let minutes=0
 
-const chart=new Chart(
-document.getElementById("chart"),
-{
-type:"bar",
-data:{
-labels:["Sessions","Minutes"],
-datasets:[{
-label:"SAM Usage",
-data:[0,0]
-}]
-}
-}
-)
+function samSpeak(text){
 
-function updateChart(){
-chart.data.datasets[0].data=[sessions,minutes]
-chart.update()
+document.getElementById("samText").innerText=text
+
+let speech=new SpeechSynthesisUtterance(text)
+
+speech.rate=0.9
+
+speechSynthesis.speak(speech)
+
 }
 
 function startSession(type){
 
 if(!audioContext){
+
 audioContext=new(window.AudioContext||window.webkitAudioContext)()
+
 }
 
 let base=200
@@ -38,23 +33,23 @@ if(type==="relax") beat=10
 if(type==="creative") beat=6
 if(type==="sleep") beat=2
 
-oscL=audioContext.createOscillator()
-oscR=audioContext.createOscillator()
+osc1=audioContext.createOscillator()
+osc2=audioContext.createOscillator()
 
-oscL.frequency.value=base
-oscR.frequency.value=base+beat
+osc1.frequency.value=base
+osc2.frequency.value=base+beat
 
-let panL=audioContext.createStereoPanner()
-let panR=audioContext.createStereoPanner()
+let pan1=audioContext.createStereoPanner()
+let pan2=audioContext.createStereoPanner()
 
-panL.pan.value=-1
-panR.pan.value=1
+pan1.pan.value=-1
+pan2.pan.value=1
 
-oscL.connect(panL).connect(audioContext.destination)
-oscR.connect(panR).connect(audioContext.destination)
+osc1.connect(pan1).connect(audioContext.destination)
+osc2.connect(pan2).connect(audioContext.destination)
 
-oscL.start()
-oscR.start()
+osc1.start()
+osc2.start()
 
 let len=document.getElementById("sessionLength").value
 
@@ -69,26 +64,10 @@ samSpeak("Starting your "+type+" session.")
 
 function stopSession(){
 
-if(oscL)oscL.stop()
-if(oscR)oscR.stop()
+if(osc1)osc1.stop()
+if(osc2)osc2.stop()
 
-samSpeak("Session stopped. Good job.")
-
-}
-
-function samSpeak(text){
-
-document.getElementById("samText").innerText=text
-
-let msg=new SpeechSynthesisUtterance(text)
-
-let voices=speechSynthesis.getVoices()
-
-msg.voice=voices.find(v=>v.name.toLowerCase().includes("female"))||voices[0]
-
-msg.rate=0.9
-
-speechSynthesis.speak(msg)
+samSpeak("Session stopped.")
 
 }
 
@@ -98,53 +77,35 @@ const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition
 
 let recog=new SpeechRecognition()
 
-recog.lang="en-US"
-
 recog.start()
-
-samSpeak("I'm listening.")
 
 recog.onresult=function(e){
 
 let speech=e.results[0][0].transcript.toLowerCase()
 
-handleQuery(speech)
+handleCommand(speech)
 
 }
 
 }
 
-function handleQuery(q){
+function handleCommand(text){
 
-if(q.includes("focus")){
-startSession("focus")
-return
-}
+if(text.includes("focus")) startSession("focus")
 
-if(q.includes("relax")||q.includes("stress")){
-startSession("relax")
-return
-}
+else if(text.includes("relax")) startSession("relax")
 
-if(q.includes("sleep")){
-startSession("sleep")
-return
-}
+else if(text.includes("sleep")) startSession("sleep")
 
-if(q.includes("stop")){
-stopSession()
-return
-}
+else if(text.includes("stop")) stopSession()
 
-samSpeak("I understand. Maybe a focus session could help.")
+else samSpeak("I'm here with you.")
 
 }
 
 function startPomodoro(){
 
 let focus=25*60
-
-document.getElementById("pomodoroStatus").innerText="Focus session started"
 
 samSpeak("Pomodoro started.")
 
@@ -156,20 +117,62 @@ samSpeak("Take a break.")
 
 }
 
+let chart=new Chart(
+
+document.getElementById("progressChart"),
+
+{
+
+type:"bar",
+
+data:{
+
+labels:["Sessions","Minutes"],
+
+datasets:[{
+
+label:"Progress",
+
+data:[0,0]
+
+}]
+
+}
+
+}
+
+)
+
+function updateChart(){
+
+chart.data.datasets[0].data=[sessions,minutes]
+
+chart.update()
+
+}
+
 const canvas=document.getElementById("visuals")
+
 const ctx=canvas.getContext("2d")
 
 canvas.width=window.innerWidth
+
 canvas.height=200
 
 let particles=[]
 
-for(let i=0;i<100;i++){
+for(let i=0;i<80;i++){
+
 particles.push({
+
 x:Math.random()*canvas.width,
+
 y:Math.random()*canvas.height,
+
 size:Math.random()*3
+
 })
+
 }
 
 function animate(){
@@ -179,13 +182,14 @@ ctx.clearRect(0,0,canvas.width,canvas.height)
 particles.forEach(p=>{
 
 ctx.beginPath()
+
 ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
 
 ctx.fillStyle="#8a2be2"
 
 ctx.fill()
 
-p.y+=0.4
+p.y+=0.3
 
 if(p.y>canvas.height)p.y=0
 
@@ -196,11 +200,3 @@ requestAnimationFrame(animate)
 }
 
 animate()
-
-if(Notification.permission!=="granted"){
-Notification.requestPermission()
-}
-
-setInterval(()=>{
-new Notification("SAM Reminder",{body:"Time to tune your mind."})
-},3600000)

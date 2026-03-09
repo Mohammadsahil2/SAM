@@ -1,83 +1,68 @@
 body{
-
+margin:0;
+font-family:Arial;
 background:#070b1a;
 color:white;
-font-family:Arial;
 text-align:center;
-margin:0;
-
 }
 
 header{
-
-padding:20px;
 background:#141c3a;
-
+padding:20px;
 }
 
 #companion{
-
 margin:30px auto;
-padding:20px;
 max-width:400px;
 background:#0e1435;
+padding:20px;
 border-radius:20px;
-
+box-shadow:0 0 25px rgba(138,43,226,0.6);
 }
 
 #avatar{
-
 width:120px;
 height:120px;
 border-radius:50%;
 margin:auto;
-
 background:radial-gradient(circle,#8a2be2,#000);
-
 animation:pulse 3s infinite;
-
 }
 
 @keyframes pulse{
-
 0%{transform:scale(1)}
 50%{transform:scale(1.1)}
 100%{transform:scale(1)}
-
 }
 
 button{
-
-padding:10px 20px;
+padding:12px 18px;
 margin:10px;
 background:#8a2be2;
 border:none;
-border-radius:8px;
+border-radius:10px;
 color:white;
 cursor:pointer;
-
 }
 
 button:hover{
-
 background:#9c4dff;
+}
 
+.buttons button{
+width:120px;
 }
 
 canvas{
-
 max-width:600px;
 margin:auto;
 display:block;
-
 }
 
 #visuals{
-
 position:fixed;
 bottom:0;
 width:100%;
 height:200px;
 z-index:-1;
-
 }

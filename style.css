@@ -1,22 +1,47 @@
 body{
+font-family:Arial;
 background:#0a0f1f;
 color:white;
-font-family:Arial;
 text-align:center;
-margin-top:40px;
+margin:0;
+}
+
+header{
+padding:20px;
+background:#141c3a;
 }
 
 button{
-padding:10px 20px;
-margin:10px;
+padding:12px;
+margin:8px;
 border:none;
 border-radius:8px;
-background:linear-gradient(135deg,#0ff0fc,#8a2be2,#ff2bd6);
-color:black;
-font-weight:bold;
+background:#8a2be2;
+color:white;
 cursor:pointer;
 }
 
 button:hover{
-opacity:0.8;
+background:#9c4dff;
+}
+
+.controls{
+padding:20px;
+}
+
+.moods button{
+width:120px;
+}
+
+#samChat{
+margin:20px;
+padding:15px;
+background:#111;
+border-radius:10px;
+min-height:60px;
+}
+
+canvas{
+max-width:600px;
+margin:auto;
 }

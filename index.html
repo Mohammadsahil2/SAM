@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
@@ -18,7 +19,7 @@
 <header>
 
 <h1>SAM</h1>
-<p>Your AI Mind Companion</p>
+<p>AI Mind Companion</p>
 
 </header>
 
@@ -27,9 +28,7 @@
 <div id="avatar"></div>
 
 <div id="samText">
-
-Hello. I'm SAM. How can I help you today?
-
+Hello. I'm SAM. Tell me how you're feeling.
 </div>
 
 <button onclick="startListening()">🎙 Talk to SAM</button>
@@ -38,16 +37,22 @@ Hello. I'm SAM. How can I help you today?
 
 <section id="sessions">
 
-<h2>Sessions</h2>
+<h2>Brain Sessions</h2>
+
+<div class="buttons">
 
 <button onclick="startSession('focus')">Focus</button>
 <button onclick="startSession('relax')">Relax</button>
 <button onclick="startSession('creative')">Creative</button>
 <button onclick="startSession('sleep')">Sleep</button>
 
+</div>
+
+<label>Session Length</label>
+
 <input type="number" id="sessionLength" value="10">
 
-<button onclick="stopSession()">Stop</button>
+<button onclick="stopSession()">Stop Session</button>
 
 </section>
 
@@ -55,7 +60,7 @@ Hello. I'm SAM. How can I help you today?
 
 <h2>Pomodoro</h2>
 
-<button onclick="startPomodoro()">Start Pomodoro</button>
+<button onclick="startPomodoro()">Start</button>
 
 <p id="pomodoroStatus"></p>
 
@@ -63,9 +68,9 @@ Hello. I'm SAM. How can I help you today?
 
 <section>
 
-<h2>Progress</h2>
+<h2>Progress Dashboard</h2>
 
-<canvas id="progressChart"></canvas>
+<canvas id="chart"></canvas>
 
 </section>
 
@@ -74,4 +79,5 @@ Hello. I'm SAM. How can I help you today?
 <script src="script.js"></script>
 
 </body>
+
 </html>

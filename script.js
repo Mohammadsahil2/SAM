@@ -5,6 +5,25 @@ let osc2
 let sessions=0
 let minutes=0
 
+const chart=new Chart(
+document.getElementById("chart"),
+{
+type:"bar",
+data:{
+labels:["Sessions","Minutes"],
+datasets:[{
+label:"SAM Activity",
+data:[0,0]
+}]
+}
+}
+)
+
+function updateChart(){
+chart.data.datasets[0].data=[sessions,minutes]
+chart.update()
+}
+
 function samSpeak(text){
 
 document.getElementById("samText").innerText=text
@@ -20,9 +39,7 @@ speechSynthesis.speak(speech)
 function startSession(type){
 
 if(!audioContext){
-
 audioContext=new(window.AudioContext||window.webkitAudioContext)()
-
 }
 
 let base=200
@@ -58,7 +75,7 @@ minutes+=parseInt(len)
 
 updateChart()
 
-samSpeak("Starting your "+type+" session.")
+samSpeak("Starting a "+type+" session.")
 
 }
 
@@ -75,11 +92,13 @@ function startListening(){
 
 const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition
 
-let recog=new SpeechRecognition()
+let recognition=new SpeechRecognition()
 
-recog.start()
+recognition.start()
 
-recog.onresult=function(e){
+samSpeak("I'm listening.")
+
+recognition.onresult=function(e){
 
 let speech=e.results[0][0].transcript.toLowerCase()
 
@@ -93,13 +112,13 @@ function handleCommand(text){
 
 if(text.includes("focus")) startSession("focus")
 
-else if(text.includes("relax")) startSession("relax")
+else if(text.includes("relax")||text.includes("stress")) startSession("relax")
 
 else if(text.includes("sleep")) startSession("sleep")
 
 else if(text.includes("stop")) stopSession()
 
-else samSpeak("I'm here with you.")
+else samSpeak("I hear you. Maybe a focus session could help.")
 
 }
 
@@ -109,68 +128,28 @@ let focus=25*60
 
 samSpeak("Pomodoro started.")
 
+document.getElementById("pomodoroStatus").innerText="Focus session started"
+
 setTimeout(()=>{
-
-samSpeak("Take a break.")
-
+samSpeak("Break time.")
 },focus*1000)
 
 }
 
-let chart=new Chart(
-
-document.getElementById("progressChart"),
-
-{
-
-type:"bar",
-
-data:{
-
-labels:["Sessions","Minutes"],
-
-datasets:[{
-
-label:"Progress",
-
-data:[0,0]
-
-}]
-
-}
-
-}
-
-)
-
-function updateChart(){
-
-chart.data.datasets[0].data=[sessions,minutes]
-
-chart.update()
-
-}
-
 const canvas=document.getElementById("visuals")
-
 const ctx=canvas.getContext("2d")
 
 canvas.width=window.innerWidth
-
 canvas.height=200
 
 let particles=[]
 
-for(let i=0;i<80;i++){
+for(let i=0;i<100;i++){
 
 particles.push({
-
 x:Math.random()*canvas.width,
-
 y:Math.random()*canvas.height,
-
 size:Math.random()*3
-
 })
 
 }
@@ -182,14 +161,11 @@ ctx.clearRect(0,0,canvas.width,canvas.height)
 particles.forEach(p=>{
 
 ctx.beginPath()
-
 ctx.arc(p.x,p.y,p.size,0,Math.PI*2)
-
 ctx.fillStyle="#8a2be2"
-
 ctx.fill()
 
-p.y+=0.3
+p.y+=0.4
 
 if(p.y>canvas.height)p.y=0
 
@@ -200,3 +176,11 @@ requestAnimationFrame(animate)
 }
 
 animate()
+
+if(Notification.permission!=="granted"){
+Notification.requestPermission()
+}
+
+setInterval(()=>{
+new Notification("SAM Reminder",{body:"Time to tune your mind."})
+},3600000)

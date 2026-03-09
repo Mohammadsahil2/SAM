@@ -15,42 +15,39 @@
 
 <body>
 
-<div id="app">
-
 <header>
+
 <h1>SAM</h1>
 <p>Your AI Mind Companion</p>
+
 </header>
 
-<section class="companion">
+<section id="companion">
 
 <div id="avatar"></div>
 
 <div id="samText">
-Hello. I'm SAM. How are you feeling today?
+
+Hello. I'm SAM. How can I help you today?
+
 </div>
 
 <button onclick="startListening()">🎙 Talk to SAM</button>
 
 </section>
 
-<section class="controls">
+<section id="sessions">
 
-<h2>Quick Sessions</h2>
-
-<div class="buttons">
+<h2>Sessions</h2>
 
 <button onclick="startSession('focus')">Focus</button>
 <button onclick="startSession('relax')">Relax</button>
 <button onclick="startSession('creative')">Creative</button>
 <button onclick="startSession('sleep')">Sleep</button>
 
-</div>
+<input type="number" id="sessionLength" value="10">
 
-<label>Session Length</label>
-<input id="sessionLength" type="number" value="10">
-
-<button onclick="stopSession()">Stop Session</button>
+<button onclick="stopSession()">Stop</button>
 
 </section>
 
@@ -68,13 +65,11 @@ Hello. I'm SAM. How are you feeling today?
 
 <h2>Progress</h2>
 
-<canvas id="chart"></canvas>
+<canvas id="progressChart"></canvas>
 
 </section>
 
 <canvas id="visuals"></canvas>
-
-</div>
 
 <script src="script.js"></script>
 
